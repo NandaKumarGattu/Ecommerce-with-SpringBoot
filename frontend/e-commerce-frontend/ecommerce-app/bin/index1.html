@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced E-commerce Store</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
+    
+</head>
+<body>
+    <!-- Theme Toggle -->
+    <div class="theme-toggle">
+        <button id="themeToggle" class="theme-btn">
+            <i class="fas fa-moon"></i>
+        </button>
+    </div>
+
+    <!-- Notification Container -->
+    <div id="notificationContainer" class="notification-container"></div>
+
+    <div class="container">
+        <!-- Enhanced Header -->
+        <div class="header">
+            <div class="logo">
+                <i class="fas fa-shopping-bag"></i>
+                E-Commerce Store
+            </div>
+            
+            <!-- Quick Search -->
+            <div class="quick-search">
+                <input type="text" id="quickSearchInput" placeholder="Search products..." class="quick-search-input">
+                <button class="quick-search-btn"><i class="fas fa-search"></i></button>
+            </div>
+
+            <!-- User Controls -->
+            <div id="userInfo" class="user-info" style="display: none;">
+                <button class="header-btn" onclick="showSection('wishlist')" title="Wishlist">
+                    <i class="fas fa-heart"></i>
+                    <span id="wishlistCount" class="count-badge">0</span>
+                </button>
+                <button class="header-btn" onclick="showSection('cart')" title="Shopping Cart">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span id="cartCount" class="count-badge">0</span>
+                </button>
+                <div class="user-dropdown">
+                    <button class="user-btn" onclick="toggleUserDropdown()">
+                        <i class="fas fa-user"></i>
+                        <span id="welcomeMessage"></span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div id="userDropdownMenu" class="dropdown-menu">
+                        <a href="#" onclick="showSection('profile')"><i class="fas fa-user-cog"></i> Profile</a>
+                        <a href="#" onclick="showSection('orders')"><i class="fas fa-box"></i> Orders</a>
+                        <a href="#" onclick="showSection('settings')"><i class="fas fa-cog"></i> Settings</a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Auth Buttons -->
+            <div id="authButtons" class="nav-buttons">
+                <button class="btn" onclick="showSection('login')">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </button>
+                <button class="btn" onclick="showSection('register')">
+                    <i class="fas fa-user-plus"></i> Register
+                </button>
+                <button class="btn" onclick="showSection('products')">
+                    <i class="fas fa-box-open"></i> Products
+                </button>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="main-nav">
+            <button class="nav-btn" onclick="showSection('products')" data-section="products">
+                <i class="fas fa-box-open"></i> Products
+            </button>
+            <button class="nav-btn" onclick="showSection('categories')" data-section="categories">
+                <i class="fas fa-tags"></i> Categories
+            </button>
+            <button class="nav-btn auth-required" onclick="showSection('cart')" data-section="cart">
+                <i class="fas fa-shopping-cart"></i> Cart
+            </button>
+            <button class="nav-btn auth-required" onclick="showSection('wishlist')" data-section="wishlist">
+                <i class="fas fa-heart"></i> Wishlist
+            </button>
+            <button class="nav-btn auth-required" onclick="showSection('orders')" data-section="orders">
+                <i class="fas fa-box"></i> Orders
+            </button>
+        </nav>
+
+        <div class="main-content">
+            <!-- Login Section -->
+            <div id="login" class="section active">
+                <div class="auth-container">
+                    <h2><i class="fas fa-sign-in-alt"></i> Login</h2>
+                    <div id="loginAlert"></div>
+                    <form id="loginForm" class="auth-form">
+                        <div class="form-group">
+                            <label for="loginUsername">
+                                <i class="fas fa-user"></i> Username
+                            </label>
+                            <input type="text" id="loginUsername" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="loginPassword">
+                                <i class="fas fa-lock"></i> Password
+                            </label>
+                            <div class="password-input">
+                                <input type="password" id="loginPassword" class="form-control" required>
+                                <button type="button" class="password-toggle" onclick="togglePassword('loginPassword')">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="form-options">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="rememberMe">
+                                <span class="checkmark"></span>
+                                Remember me
+                            </label>
+                            <a href="#" class="forgot-password">Forgot password?</a>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-full">
+                            <i class="fas fa-sign-in-alt"></i> Login
+                        </button>
+                    </form>
+                    <div class="auth-switch">
+                        Don't have an account? 
+                        <a href="#" onclick="showSection('register')">Register here</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Register Section -->
+            <div id="register" class="section">
+                <div class="auth-container">
+                    <h2><i class="fas fa-user-plus"></i> Register</h2>
+                    <div id="registerAlert"></div>
+                    <form id="registerForm" class="auth-form">
+                        <div class="form-group">
+                            <label for="registerUsername">
+                                <i class="fas fa-user"></i> Username
+                            </label>
+                            <input type="text" id="registerUsername" class="form-control" required>
+                            <div class="field-hint">Choose a unique username</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="registerEmail">
+                                <i class="fas fa-envelope"></i> Email
+                            </label>
+                            <input type="email" id="registerEmail" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="registerPassword">
+                                <i class="fas fa-lock"></i> Password
+                            </label>
+                            <div class="password-input">
+                                <input type="password" id="registerPassword" class="form-control" required>
+                                <button type="button" class="password-toggle" onclick="togglePassword('registerPassword')">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            <div class="password-strength">
+                                <div class="strength-bar">
+                                    <div class="strength-fill"></div>
+                                </div>
+                                <div class="strength-text">Password strength</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirmPassword">
+                                <i class="fas fa-lock"></i> Confirm Password
+                            </label>
+                            <input type="password" id="confirmPassword" class="form-control" required>
+                        </div>
+                        <div class="form-options">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="agreeTerms" required>
+                                <span class="checkmark"></span>
+                                I agree to the <a href="#" class="terms-link">Terms & Conditions</a>
+                            </label>
+                        </div>
+                        <button type="submit" class="btn btn-success btn-full">
+                            <i class="fas fa-user-plus"></i> Register
+                        </button>
+                    </form>
+                    <div class="auth-switch">
+                        Already have an account? 
+                        <a href="#" onclick="showSection('login')">Login here</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Products Section -->
+            <div id="products" class="section">
+                <div class="section-header">
+                    <h2><i class="fas fa-box-open"></i> Products</h2>
+                    <button class="btn btn-success auth-required" onclick="showAddProductModal()">
+                        <i class="fas fa-plus"></i> Add Product
+                    </button>
+                </div>
+                
+                <div id="productsAlert"></div>
+                
+                <!-- Advanced Search & Filters -->
+                <div class="search-filters">
+                    <div class="search-bar">
+                        <input type="text" id="searchInput" class="form-control" placeholder="Search products...">
+                        <button class="btn btn-primary" onclick="searchProducts()">
+                            <i class="fas fa-search"></i> Search
+                        </button>
+                        <button class="btn" onclick="loadProducts()">
+                            <i class="fas fa-refresh"></i> Reset
+                        </button>
+                    </div>
+                    
+                    <div class="filters">
+                        <select id="categoryFilter" class="form-control">
+                            <option value="">All Categories</option>
+                        </select>
+                        
+                        <div class="price-range">
+                            <label>Price Range:</label>
+                            <input type="range" id="minPrice" min="0" max="1000" value="0">
+                            <input type="range" id="maxPrice" min="0" max="1000" value="1000">
+                            <div class="price-display">
+                                $<span id="minPriceDisplay">0</span> - $<span id="maxPriceDisplay">1000</span>
+                            </div>
+                        </div>
+                        
+                        <select id="sortBy" class="form-control">
+                            <option value="">Sort By</option>
+                            <option value="name">Name</option>
+                            <option value="price-low">Price: Low to High</option>
+                            <option value="price-high">Price: High to Low</option>
+                            <option value="rating">Rating</option>
+                            <option value="newest">Newest</option>
+                        </select>
+                        
+                        <div class="view-toggle">
+                            <button class="view-btn active" data-view="grid" title="Grid View">
+                                <i class="fas fa-th"></i>
+                            </button>
+                            <button class="view-btn" data-view="list" title="List View">
+                                <i class="fas fa-list"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="productsLoading" class="loading" style="display: none;">
+                    <div class="spinner"></div>
+                    Loading products...
+                </div>
+
+                <div id="productsGrid" class="products-container grid-view"></div>
+            </div>
+
+            <!-- Shopping Cart Section -->
+            <div id="cart" class="section">
+                <div class="section-header">
+                    <h2><i class="fas fa-shopping-cart"></i> Shopping Cart</h2>
+                    <button class="btn btn-danger" onclick="clearCart()">
+                        <i class="fas fa-trash"></i> Clear Cart
+                    </button>
+                </div>
+                
+                <div id="cartAlert"></div>
+                <div id="cartItems" class="cart-items"></div>
+                
+                <div class="cart-summary">
+                    <div class="summary-item">
+                        <span>Subtotal:</span>
+                        <span id="cartSubtotal">$0.00</span>
+                    </div>
+                    <div class="summary-item">
+                        <span>Tax (10%):</span>
+                        <span id="cartTax">$0.00</span>
+                    </div>
+                    <div class="summary-item">
+                        <span>Shipping:</span>
+                        <span id="cartShipping">$5.99</span>
+                    </div>
+                    <div class="summary-total">
+                        <span>Total:</span>
+                        <span id="cartTotal">$0.00</span>
+                    </div>
+                    <button class="btn btn-success btn-full" onclick="checkout()">
+                        <i class="fas fa-credit-card"></i> Proceed to Checkout
+                    </button>
+                </div>
+            </div>
+
+            <!-- Wishlist Section -->
+            <div id="wishlist" class="section">
+                <div class="section-header">
+                    <h2><i class="fas fa-heart"></i> Wishlist</h2>
+                    <button class="btn btn-danger" onclick="clearWishlist()">
+                        <i class="fas fa-trash"></i> Clear Wishlist
+                    </button>
+                </div>
+                
+                <div id="wishlistAlert"></div>
+                <div id="wishlistItems" class="products-container grid-view"></div>
+            </div>
+
+            <!-- Categories Section -->
+            <div id="categories" class="section">
+                <div class="section-header">
+                    <h2><i class="fas fa-tags"></i> Categories</h2>
+                    <button class="btn btn-success auth-required" onclick="showAddCategoryModal()">
+                        <i class="fas fa-plus"></i> Add Category
+                    </button>
+                </div>
+                
+                <div id="categoriesAlert"></div>
+                
+                <div id="categoriesLoading" class="loading" style="display: none;">
+                    <div class="spinner"></div>
+                    Loading categories...
+                </div>
+
+                <div id="categoriesList" class="categories-grid"></div>
+            </div>
+
+            <!-- User Profile Section -->
+            <div id="profile" class="section">
+                <div class="section-header">
+                    <h2><i class="fas fa-user-cog"></i> Profile</h2>
+                </div>
+                
+                <div class="profile-container">
+                    <div class="profile-sidebar">
+                        <div class="profile-avatar">
+                            <i class="fas fa-user-circle"></i>
+                            <button class="btn btn-sm">Change Avatar</button>
+                        </div>
+                        <div class="profile-stats">
+                            <div class="stat-item">
+                                <span class="stat-value" id="totalOrders">0</span>
+                                <span class="stat-label">Total Orders</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-value" id="totalSpent">$0</span>
+                                <span class="stat-label">Total Spent</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="profile-content">
+                        <form id="profileForm" class="profile-form">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Username</label>
+                                    <input type="text" id="profileUsername" class="form-control" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label>Email</label>
+                                    <input type="email" id="profileEmail" class="form-control">
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>First Name</label>
+                                    <input type="text" id="profileFirstName" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label>Last Name</label>
+                                    <input type="text" id="profileLastName" class="form-control">
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Phone</label>
+                                <input type="tel" id="profilePhone" class="form-control">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Address</label>
+                                <textarea id="profileAddress" class="form-control" rows="3"></textarea>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Save Changes
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Orders Section -->
+            <div id="orders" class="section">
+                <div class="section-header">
+                    <h2><i class="fas fa-box"></i> Order History</h2>
+                </div>
+                
+                <div id="ordersAlert"></div>
+                <div id="ordersList" class="orders-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <!-- Add Product Modal -->
+    <div id="addProductModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-plus"></i> Add New Product</h3>
+                <span class="close" onclick="closeModal('addProductModal')">&times;</span>
+            </div>
+            <div id="addProductAlert"></div>
+            <form id="addProductForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="productName">Product Name</label>
+                        <input type="text" name="name" id="productName" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="productCategory">Category</label>
+                        <select name="categoryId" id="productCategory" class="form-control">
+                            <option value="">Select Category</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="productDescription">Description</label>
+                    <textarea name="description" id="productDescription" class="form-control" rows="3"></textarea>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="productPrice">Price ($)</label>
+                        <input type="number" name="price" id="productPrice" class="form-control" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="productStock">Stock Quantity</label>
+                        <input type="number" name="stockQuantity" id="productStock" class="form-control" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="productImageUrl">Image URL</label>
+                    <input type="url" name="imageUrl" id="productImageUrl" class="form-control">
+                </div>
+                
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('addProductModal')">
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-plus"></i> Add Product
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Category Modal -->
+    <div id="addCategoryModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-plus"></i> Add New Category</h3>
+                <span class="close" onclick="closeModal('addCategoryModal')">&times;</span>
+            </div>
+            <div id="addCategoryAlert"></div>
+            <form id="addCategoryForm">
+                <div class="form-group">
+                    <label for="categoryName">Category Name</label>
+                    <input type="text" id="categoryName" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="categoryDescription">Description</label>
+                    <textarea id="categoryDescription" class="form-control" rows="3"></textarea>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('addCategoryModal')">
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-plus"></i> Add Category
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Product Details Modal -->
+    <div id="productDetailsModal" class="modal">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h3 id="productDetailsTitle"></h3>
+                <span class="close" onclick="closeModal('productDetailsModal')">&times;</span>
+            </div>
+            <div class="product-details-content">
+                <div class="product-images">
+                    <img id="productDetailsImage" src="" alt="">
+                </div>
+                <div class="product-info">
+                    <div class="product-price" id="productDetailsPrice"></div>
+                    <div class="product-rating" id="productDetailsRating"></div>
+                    <div class="product-description" id="productDetailsDescription"></div>
+                    <div class="product-actions">
+                        <div class="quantity-selector">
+                            <button class="qty-btn" onclick="changeQuantity(-1)">-</button>
+                            <input type="number" id="selectedQuantity" value="1" min="1">
+                            <button class="qty-btn" onclick="changeQuantity(1)">+</button>
+                        </div>
+                        <button class="btn btn-primary" onclick="addToCartFromModal()">
+                            <i class="fas fa-cart-plus"></i> Add to Cart
+                        </button>
+                        <button class="btn btn-outline" onclick="toggleWishlistFromModal()">
+                            <i class="fas fa-heart"></i> Wishlist
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
